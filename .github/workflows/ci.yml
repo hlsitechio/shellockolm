@@ -69,28 +69,20 @@ jobs:
         echo "✓ All basic imports and help commands successful"
 
     - name: Test scanner on sample data
+      shell: bash
       run: |
         # Create test package.json
         mkdir -p test_project
 
-        # Create vulnerable package.json
-        cat > test_project/package.json << 'EOF'
-        {
-          "name": "test-project",
-          "version": "1.0.0",
-          "dependencies": {
-            "react": "19.0.0",
-            "react-dom": "19.0.0"
-          }
-        }
-        EOF
+        # Create vulnerable package.json with Python (cross-platform)
+        python -c "import json; open('test_project/package.json', 'w').write(json.dumps({'name': 'test-project', 'version': '1.0.0', 'dependencies': {'react': '19.0.0', 'react-dom': '19.0.0'}}, indent=2))"
 
-        echo "✓ Test project created"
+        echo "Test project created"
 
         # Run scanner (allow failure since it's a test)
         python scan_simple.py test_project || echo "Scanner test completed"
 
-        echo "✓ Scanner execution test completed"
+        echo "Scanner execution test completed"
 
   security-scan:
     name: Security Scanning
