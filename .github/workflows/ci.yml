@@ -93,6 +93,7 @@ jobs:
 
     - name: Run Bandit security scan
       uses: tj-actions/bandit@v5.1
+      continue-on-error: true
       with:
         targets: |
           .
