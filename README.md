@@ -75,6 +75,7 @@ An attacker can craft malicious HTTP requests to React Server Function endpoints
 - **Simple Scanner** (`scan_simple.py`) - Fast CLI scanner for quick assessments
 - **Mass Scanner** - Batch scanning of entire drives
 - **Auto-Fix Tool** (`auto_fix.py`) - Complete scan→patch→verify automation
+- **NPM Malware Scanner** (`malware_scanner.py`) - Detect npm supply chain attacks (shai-hulud campaign)
 
 ### 🔧 Automated Patching
 - **Intelligent patching** - Detects React & Next.js versions
@@ -364,6 +365,50 @@ Backup enabled: True
 DRY RUN MODE - No changes were made
 Run with --apply to actually patch the projects
 ======================================================================
+```
+
+#### 4. **NPM Malware Scanner** (`malware_scanner.py`) 🔒
+
+**Detect npm supply chain attacks (shai-hulud campaign and others)**
+
+```bash
+# Scan for malicious npm packages
+python malware_scanner.py G:/projects
+
+# Scan entire drive
+python malware_scanner.py G:/
+
+# Get help
+python malware_scanner.py --help
+```
+
+**What it detects:**
+- Malicious files: `bun_environment.js`, `setup_bun.js`, `cloud.json`, `truffleSecrets.json`
+- Malicious directories: `.truffler-cache`, `.truffler`
+- Malicious workflows: `discussion.yaml`
+- Suspicious npm packages: `@postman/*`, `@posthog/*`, `@asyncapi/*`, `@ensdomains/*`, `@zapier/*`
+- Suspicious preinstall scripts
+
+**Output Example:**
+```
+======================================================================
+NPM MALWARE SCAN REPORT
+======================================================================
+Scan completed: 2025-12-06T19:37:34.604597
+
+Projects scanned: 7106
+Infected:         0
+Clean:            7106
+
+Total indicators: 0
+  CRITICAL:       0
+  HIGH:           0
+
+======================================================================
+
+[OK] No malware indicators found
+
+[*] Report saved to: malware_scan_report_20251206_193734.json
 ```
 
 ### 🤖 As an MCP Server
