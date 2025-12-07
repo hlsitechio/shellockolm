@@ -53,15 +53,13 @@ jobs:
         pip list | grep mypy && mypy src/*.py --ignore-missing-imports || echo "Mypy check completed with warnings"
 
     - name: Run basic tool tests
+      shell: bash
       run: |
-        # Add src to Python path
-        export PYTHONPATH="${PYTHONPATH}:./src"
-
         # Test scanner import
-        python -c "import sys; sys.path.insert(0, 'src'); from scanner import CVEScanner; scanner = CVEScanner(); print('✓ Scanner module OK')"
+        python -c "import sys; sys.path.insert(0, 'src'); from scanner import CVEScanner; scanner = CVEScanner(); print('Scanner module OK')"
 
         # Test remediation import
-        python -c "import sys; sys.path.insert(0, 'src'); from remediation import Remediator; rem = Remediator(); print('✓ Remediation module OK')"
+        python -c "import sys; sys.path.insert(0, 'src'); from remediation import Remediator; rem = Remediator(); print('Remediation module OK')"
 
         # Test scan_simple help
         python src/scan_simple.py --help || echo "scan_simple.py help command executed"
@@ -69,7 +67,7 @@ jobs:
         # Test auto_fix help
         python src/auto_fix.py --help || echo "auto_fix.py help command executed"
 
-        echo "✓ All basic imports and help commands successful"
+        echo "All basic imports and help commands successful"
 
     - name: Test scanner on sample data
       shell: bash
