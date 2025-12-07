@@ -50,21 +50,24 @@ jobs:
     - name: Type checking with mypy (warnings only)
       continue-on-error: true
       run: |
-        pip list | grep mypy && mypy *.py --ignore-missing-imports || echo "Mypy check completed with warnings"
+        pip list | grep mypy && mypy src/*.py --ignore-missing-imports || echo "Mypy check completed with warnings"
 
     - name: Run basic tool tests
       run: |
+        # Add src to Python path
+        export PYTHONPATH="${PYTHONPATH}:./src"
+
         # Test scanner import
-        python -c "from scanner import CVEScanner; scanner = CVEScanner(); print('✓ Scanner module OK')"
+        python -c "import sys; sys.path.insert(0, 'src'); from scanner import CVEScanner; scanner = CVEScanner(); print('✓ Scanner module OK')"
 
         # Test remediation import
-        python -c "from remediation import Remediator; rem = Remediator(); print('✓ Remediation module OK')"
+        python -c "import sys; sys.path.insert(0, 'src'); from remediation import Remediator; rem = Remediator(); print('✓ Remediation module OK')"
 
         # Test scan_simple help
-        python scan_simple.py --help || echo "scan_simple.py help command executed"
+        python src/scan_simple.py --help || echo "scan_simple.py help command executed"
 
         # Test auto_fix help
-        python auto_fix.py --help || echo "auto_fix.py help command executed"
+        python src/auto_fix.py --help || echo "auto_fix.py help command executed"
 
         echo "✓ All basic imports and help commands successful"
 
@@ -80,7 +83,7 @@ jobs:
         echo "Test project created"
 
         # Run scanner (allow failure since it's a test)
-        python scan_simple.py test_project || echo "Scanner test completed"
+        python src/scan_simple.py test_project || echo "Scanner test completed"
 
         echo "Scanner execution test completed"
 
