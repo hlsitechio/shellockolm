@@ -1,15 +1,6 @@
 <div align="center">
 
-```
-╔═══════════════════════════════════════════════════════════════════╗
-║                                                                   ║
-║     🛡️  REACT2SHELL SECURITY TOOLKIT  🛡️                         ║
-║                                                                   ║
-║         Automated Protection for CVE-2025-55182                  ║
-║              Critical RCE in React Server Components              ║
-║                                                                   ║
-╚═══════════════════════════════════════════════════════════════════╝
-```
+![React2Shell Security Toolkit](docs/images/banner.png)
 
 **Protect your React applications from CVE-2025-55182 in 2 minutes**
 
