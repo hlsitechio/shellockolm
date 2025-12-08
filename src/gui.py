@@ -7,6 +7,7 @@ Your Security Detective with a graphical interface
 """
 
 import sys
+import io
 import tkinter as tk
 from tkinter import ttk, filedialog, scrolledtext
 from pathlib import Path
@@ -16,6 +17,21 @@ from threading import Thread
 from scanner import CVEScanner
 from malware_scanner import MalwareScanner
 from vulnerability_database import VulnerabilityDatabase
+
+
+class OutputRedirector(io.StringIO):
+    """Redirect stdout/stderr to GUI tabs in real-time"""
+    def __init__(self, gui, tab_name):
+        super().__init__()
+        self.gui = gui
+        self.tab_name = tab_name
+
+    def write(self, text):
+        if text and text.strip():
+            self.gui.root.after(0, self.gui.append_to_tab, self.tab_name, text, "info")
+
+    def flush(self):
+        pass
 
 
 # 🎨 DARK THEME COLORS
@@ -394,21 +410,31 @@ class ShellockolmGUI:
             if self.scan_cve.get():
                 try:
                     self.update_progress('🔍 Finding package.json files...')
-                    self.root.after(0, self.append_to_tab, 'cve_scanner', "🔍 Initializing CVE scanner...\n", "info")
+                    self.root.after(0, self.append_to_tab, 'cve_scanner', "🔍 Initializing CVE scanner...\n", "detective")
+                    self.root.after(0, self.append_to_tab, 'cve_scanner', "=" * 70 + "\n", "detective")
 
                     # Find package.json files first to show count
                     package_files = list(Path(scan_path).rglob('package.json') if recursive else Path(scan_path).glob('package.json'))
                     package_files = [f for f in package_files if 'node_modules' not in str(f)]
 
                     self.update_progress(f'🔍 Found {len(package_files)} projects to scan...')
-                    self.root.after(0, self.append_to_tab, 'cve_scanner', f"📂 Found {len(package_files)} projects\n", "info")
+                    self.root.after(0, self.append_to_tab, 'cve_scanner', f"📂 Found {len(package_files)} projects to scan\n\n", "info")
 
-                    results['cve'] = self.cve_scanner.scan_directory(scan_path, recursive=recursive)
+                    # Redirect stdout to capture scanner output
+                    old_stdout = sys.stdout
+                    sys.stdout = OutputRedirector(self, 'cve_scanner')
+
+                    try:
+                        results['cve'] = self.cve_scanner.scan_directory(scan_path, recursive=recursive)
+                    finally:
+                        sys.stdout = old_stdout
 
                     self.update_progress('✅ CVE scan completed')
-                    self.root.after(0, self.append_to_tab, 'cve_scanner', "✅ CVE scan completed!\n\n", "success")
+                    self.root.after(0, self.append_to_tab, 'cve_scanner', "\n" + "=" * 70 + "\n", "success")
+                    self.root.after(0, self.append_to_tab, 'cve_scanner', "✅ CVE scan completed!\n", "success")
                 except Exception as e:
-                    error_msg = f"❌ CVE Scanner Error: {str(e)}\n\n"
+                    sys.stdout = old_stdout
+                    error_msg = f"\n❌ CVE Scanner Error: {str(e)}\n\n"
                     self.root.after(0, self.append_to_tab, 'cve_scanner', error_msg, "danger")
                     self.root.after(0, self.append_to_tab, 'summary', f"⚠️ CVE scan failed: {str(e)}\n", "warning")
 
@@ -416,14 +442,24 @@ class ShellockolmGUI:
             if self.scan_malware.get():
                 try:
                     self.update_progress('☠️ Scanning for malware indicators...')
-                    self.root.after(0, self.append_to_tab, 'malware_scanner', "☠️ Initializing malware scanner...\n", "info")
+                    self.root.after(0, self.append_to_tab, 'malware_scanner', "☠️ Initializing malware scanner...\n", "detective")
+                    self.root.after(0, self.append_to_tab, 'malware_scanner', "=" * 70 + "\n\n", "detective")
 
-                    results['malware'] = self.malware_scanner.scan_directory(scan_path)
+                    # Redirect stdout to capture scanner output
+                    old_stdout = sys.stdout
+                    sys.stdout = OutputRedirector(self, 'malware_scanner')
+
+                    try:
+                        results['malware'] = self.malware_scanner.scan_directory(scan_path)
+                    finally:
+                        sys.stdout = old_stdout
 
                     self.update_progress('✅ Malware scan completed')
-                    self.root.after(0, self.append_to_tab, 'malware_scanner', "✅ Malware scan completed!\n\n", "success")
+                    self.root.after(0, self.append_to_tab, 'malware_scanner', "\n" + "=" * 70 + "\n", "success")
+                    self.root.after(0, self.append_to_tab, 'malware_scanner', "✅ Malware scan completed!\n", "success")
                 except Exception as e:
-                    error_msg = f"❌ Malware Scanner Error: {str(e)}\n\n"
+                    sys.stdout = old_stdout
+                    error_msg = f"\n❌ Malware Scanner Error: {str(e)}\n\n"
                     self.root.after(0, self.append_to_tab, 'malware_scanner', error_msg, "danger")
                     self.root.after(0, self.append_to_tab, 'summary', f"⚠️ Malware scan failed: {str(e)}\n", "warning")
 
