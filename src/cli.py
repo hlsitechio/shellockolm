@@ -1432,13 +1432,6 @@ def show_main_menu():
     """Display the main menu using 4-column table layout"""
 
     console.print()
-    console.print(Panel(
-        "[bold bright_white]SHELLOCKOLM - npm/Node.js Security Scanner[/bold bright_white]",
-        border_style="bright_cyan",
-        padding=(0, 2)
-    ))
-    console.print()
-
     # Row 1: SCAN, LIVE, CVE, MALWARE
     t1 = Table(box=box.ROUNDED, border_style="bright_cyan", show_header=True, padding=(0, 1))
     t1.add_column("[cyan]SCAN[/cyan]", width=17)
