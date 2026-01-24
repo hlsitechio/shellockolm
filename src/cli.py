@@ -1588,66 +1588,36 @@ MENU_CATEGORIES = {
 
 
 def show_main_menu():
-    """Display the main menu using 4-column table layout"""
+    """Display the main menu using 2-row, 5-column compact layout"""
 
     console.print()
-    # Row 1: SCAN, LIVE, CVE, MALWARE
+    # Row 1: SCAN, CVE, MALWARE, SECRETS, REMEDIATION
     t1 = Table(box=box.ROUNDED, border_style="bright_cyan", show_header=True, padding=(0, 1))
-    t1.add_column("[cyan]SCAN[/cyan]", width=17)
-    t1.add_column("[green]LIVE[/green]", width=15)
-    t1.add_column("[yellow]CVE[/yellow]", width=15)
-    t1.add_column("[red]MALWARE[/red]", width=15)
-    t1.add_row("[cyan][ 1][/cyan] Full Scan", "[green][ 8][/green] Probe All", "[yellow][11][/yellow] List All", "[red][17][/red] Malware Deep")
-    t1.add_row("[cyan][1a][/cyan] ALL npm", "[green][ 9][/green] Next.js", "[yellow][12][/yellow] Critical", "[red][18][/red] Quick Scan")
-    t1.add_row("[cyan][1b][/cyan] Pre-Check", "[green][10][/green] n8n", "[yellow][13][/yellow] Bounty", "[red][19][/red] Quarantine")
-    t1.add_row("[cyan][1c][/cyan] Deep Scan", "", "[yellow][14][/yellow] Details", "[red][20][/red] Remove")
-    t1.add_row("[cyan][1d][/cyan] CVE Hunter", "", "[yellow][15][/yellow] By Pkg", "[red][21][/red] Cleanup")
-    t1.add_row("[cyan][1e][/cyan] Custom", "", "[yellow][16][/yellow] Export", "[red][22][/red] Report")
-    t1.add_row("[cyan][ 2][/cyan] React", "", "", "")
-    t1.add_row("[cyan][ 3][/cyan] Next.js", "", "", "")
-    t1.add_row("[cyan][ 4][/cyan] npm Pkgs", "", "", "")
-    t1.add_row("[cyan][ 5][/cyan] Node.js", "", "", "")
-    t1.add_row("[cyan][ 6][/cyan] n8n", "", "", "")
-    t1.add_row("[cyan][ 7][/cyan] Chain", "", "", "")
+    t1.add_column("[cyan]SCAN[/cyan]", width=14)
+    t1.add_column("[yellow]CVE[/yellow]", width=14)
+    t1.add_column("[red]MALWARE[/red]", width=14)
+    t1.add_column("[magenta]SECRETS[/magenta]", width=14)
+    t1.add_column("[blue]REMEDIATION[/blue]", width=14)
+    t1.add_row("[cyan][ 1][/cyan] Full", "[yellow][11][/yellow] List All", "[red][17][/red] Deep", "[magenta][23][/magenta] Scan", "[blue][27][/blue] Risk")
+    t1.add_row("[cyan][1a][/cyan] ALL npm", "[yellow][12][/yellow] Critical", "[red][18][/red] Quick", "[magenta][24][/magenta] .env", "[blue][30][/blue] Auto Fix")
+    t1.add_row("[cyan][1b][/cyan] Pre-Check", "[yellow][13][/yellow] Bounty", "[red][19][/red] Quarantine", "[magenta][25][/magenta] Entropy", "[blue][31][/blue] Preview")
+    t1.add_row("[cyan][1c][/cyan] Deep", "[yellow][14][/yellow] Details", "[red][20][/red] Remove", "[magenta][26][/magenta] Report", "[blue][32][/blue] Rollback")
+    t1.add_row("[cyan][1d][/cyan] CVE Hunter", "[yellow][15][/yellow] By Pkg", "[red][21][/red] Cleanup", "", "[bright_red][ X][/bright_red] QuickFix")
+    t1.add_row("[cyan][1e][/cyan] Custom", "[yellow][16][/yellow] Export", "[red][22][/red] Report", "", "[green][ F][/green] FixWizard")
     console.print(t1)
 
-    # Row 2: SECRETS, FIX, DEPS, SARIF
+    # Row 2: LIVE, DEPS, GITHUB, SBOM, CI/CD
     t2 = Table(box=box.ROUNDED, border_style="bright_cyan", show_header=True, padding=(0, 1))
-    t2.add_column("[magenta]SECRETS[/magenta]", width=17)
-    t2.add_column("[blue]REMEDIATION[/blue]", width=15)
-    t2.add_column("[white]DEPS[/white]", width=15)
-    t2.add_column("[yellow]SARIF[/yellow]", width=15)
-    t2.add_row("[magenta][23][/magenta] Sec Scan", "[blue][27][/blue] Risk Score", "[white][33][/white] Lockfile", "[yellow][37][/yellow] Export")
-    t2.add_row("[magenta][24][/magenta] .env Scan", "[blue][28][/blue] Quick Score", "[white][34][/white] Dupes", "[yellow][38][/yellow] View")
-    t2.add_row("[magenta][25][/magenta] Entropy", "[blue][29][/blue] Fix Report", "[white][35][/white] Typosquat", "[yellow][39][/yellow] Convert")
-    t2.add_row("[magenta][26][/magenta] Report", "[blue][30][/blue] Auto Fix", "[white][36][/white] Report", "")
-    t2.add_row("", "[blue][31][/blue] Preview", "", "")
-    t2.add_row("", "[blue][32][/blue] Rollback", "", "")
+    t2.add_column("[green]LIVE[/green]", width=14)
+    t2.add_column("[white]DEPS[/white]", width=14)
+    t2.add_column("[green]GITHUB[/green]", width=14)
+    t2.add_column("[magenta]SBOM[/magenta]", width=14)
+    t2.add_column("[blue]CI/CD[/blue]", width=14)
+    t2.add_row("[green][ 8][/green] Probe All", "[white][33][/white] Lockfile", "[green][40][/green] GHSA", "[magenta][48][/magenta] Generate", "[blue][58][/blue] Generate")
+    t2.add_row("[green][ 9][/green] Next.js", "[white][34][/white] Dupes", "[green][41][/green] Check", "[magenta][49][/magenta] CycloneDX", "[blue][59][/blue] Basic")
+    t2.add_row("[green][10][/green] n8n", "[white][35][/white] Typosquat", "[cyan][44][/cyan] npm Audit", "[magenta][50][/magenta] SPDX", "[blue][60][/blue] Full")
+    t2.add_row("", "[white][36][/white] Report", "[cyan][45][/cyan] Auto Fix", "[yellow][37][/yellow] SARIF", "[blue][61][/blue] Watch")
     console.print(t2)
-
-    # Row 3: GITHUB, NPM, SBOM, TREE
-    t3 = Table(box=box.ROUNDED, border_style="bright_cyan", show_header=True, padding=(0, 1))
-    t3.add_column("[green]GITHUB[/green]", width=17)
-    t3.add_column("[cyan]NPM AUDIT[/cyan]", width=15)
-    t3.add_column("[magenta]SBOM[/magenta]", width=15)
-    t3.add_column("[yellow]DEP TREE[/yellow]", width=15)
-    t3.add_row("[green][40][/green] Query GHSA", "[cyan][44][/cyan] Audit", "[magenta][48][/magenta] Generate", "[yellow][51][/yellow] View")
-    t3.add_row("[green][41][/green] Check", "[cyan][45][/cyan] Auto Fix", "[magenta][49][/magenta] CycloneDX", "[yellow][52][/yellow] Find Pkg")
-    t3.add_row("[green][42][/green] Scan", "[cyan][46][/cyan] Recs", "[magenta][50][/magenta] SPDX", "[yellow][53][/yellow] Stats")
-    t3.add_row("[green][43][/green] Report", "[cyan][47][/cyan] History", "", "[yellow][54][/yellow] Export")
-    console.print(t3)
-
-    # Row 4: IGNORE, CI/CD
-    t4 = Table(box=box.ROUNDED, border_style="bright_cyan", show_header=True, padding=(0, 1))
-    t4.add_column("[red]IGNORE[/red]", width=17)
-    t4.add_column("[blue]CI/CD[/blue]", width=15)
-    t4.add_column("", width=15)
-    t4.add_column("", width=15)
-    t4.add_row("[red][55][/red] Create", "[blue][58][/blue] Generate", "", "")
-    t4.add_row("[red][56][/red] View", "[blue][59][/blue] Basic", "", "")
-    t4.add_row("[red][57][/red] Test Path", "[blue][60][/blue] Full CI/CD", "", "")
-    t4.add_row("", "[blue][61][/blue] Watch", "", "")
-    console.print(t4)
     console.print()
 
 
