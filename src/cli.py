@@ -271,6 +271,10 @@ def print_banner(show_full: bool = True):
         padding=(0, 2),
     ))
 
+    # Quick action bar below banner
+    console.print("  [bright_red][Q][/bright_red] Exit   [bright_cyan][H][/bright_cyan] Help   [bright_yellow][S][/bright_yellow] ⭐ Star us on GitHub")
+    console.print()
+
 
 def severity_style(severity: str) -> str:
     """Get style for severity level"""
@@ -1501,9 +1505,6 @@ def show_main_menu():
     t4.add_row("[red][57][/red] Test Path", "[blue][60][/blue] Full CI/CD", "", "")
     t4.add_row("", "[blue][61][/blue] Watch", "", "")
     console.print(t4)
-
-    console.print()
-    console.print("  [bright_red][0][/bright_red] Exit   [bright_cyan][h][/bright_cyan] Help   [bright_green][c][/bright_green] Clear   [bright_yellow][l][/bright_yellow] Logs   [bright_magenta][?][/bright_magenta] Command Info")
     console.print()
 
 
@@ -1860,6 +1861,18 @@ def interactive_shell():
             if choice in ['c', 'clear']:
                 console.clear()
                 print_banner(show_full=False)
+                continue
+
+            if choice in ['s', 'star']:
+                import webbrowser
+                console.print("\n[bright_yellow]⭐ Opening GitHub to star Shellockolm...[/bright_yellow]")
+                console.print("[dim]Your support helps us keep the project alive![/dim]\n")
+                try:
+                    webbrowser.open("https://github.com/hlsitechio/shellockolm")
+                    console.print("[success]✓ Opened in your browser![/success]")
+                except Exception:
+                    console.print("[info]Please visit: https://github.com/hlsitechio/shellockolm[/info]")
+                console.input("\n[subtitle]Press Enter to continue...[/subtitle]")
                 continue
 
             # Get command by ID
