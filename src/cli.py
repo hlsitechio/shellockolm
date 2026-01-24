@@ -249,6 +249,11 @@ def print_banner(show_full: bool = True):
     # Info box using Rich Panel for proper alignment
     tip = get_random_tip()
 
+    # Add session info if available
+    session_line = ""
+    if session_logger:
+        session_line = f"\n[dim]📝 Session: {session_logger.session_id} | Log: /tmp/shellockolm/sessions/[/dim]"
+
     info_content = f"""[bold bright_white]Welcome back, {username}![/bold bright_white]
 [dim]{date_str} • {time_str}[/dim]
 
@@ -256,7 +261,7 @@ def print_banner(show_full: bool = True):
 [dim]React • Next.js • Node.js • n8n • npm • Supply Chain[/dim]
 
 [bright_green]✓ 29 CVEs  ✓ 6 Scanners  ✓ Malware  ✓ Secrets  ✓ Auto-Fix[/bright_green]
-[link=https://github.com/hlsitechio/shellockolm][bright_blue]🔗 github.com/hlsitechio/shellockolm[/bright_blue][/link]
+[link=https://github.com/hlsitechio/shellockolm][bright_blue]🔗 github.com/hlsitechio/shellockolm[/bright_blue][/link]{session_line}
 ────────────────────────────────────────────────────────────────────
 [bright_yellow]💡 Tip:[/bright_yellow] {tip}"""
 
@@ -1428,12 +1433,8 @@ def show_main_menu():
     """Display the main menu using 4-column table layout"""
 
     console.print()
-    # Build header content with session info if available
-    header_content = "[bold bright_white]SHELLOCKOLM - npm/Node.js Security Scanner[/bold bright_white]"
-    if session_logger:
-        header_content += f"\n[dim]📝 Session: {session_logger.session_id} | Log: /tmp/shellockolm/sessions/[/dim]"
     console.print(Panel(
-        header_content,
+        "[bold bright_white]SHELLOCKOLM - npm/Node.js Security Scanner[/bold bright_white]",
         border_style="bright_cyan",
         padding=(0, 2)
     ))
