@@ -1,312 +1,480 @@
 #!/usr/bin/env python3
 """
-CVE-2025-55182 Auto-Fix Tool
-Automated workflow: Scan → Patch → Verify
+Shellockolm Auto-Fix Engine
+Automatically patches vulnerable npm packages to secure versions
+
+Features:
+- Detects vulnerable package versions
+- Looks up patched versions from vulnerability database
+- Creates backups before modifications
+- Updates package.json and lockfiles
+- Supports bulk fixes and rollback
 """
 
-import sys
 import json
+import shutil
+import subprocess
+import re
 from pathlib import Path
 from datetime import datetime
-from scanner import CVEScanner
-from remediation import Remediator
+from typing import Dict, List, Optional, Tuple, Any
+from dataclasses import dataclass, field
+from enum import Enum
+
+from vulnerability_database import VulnerabilityDatabase, Severity
+
+
+class FixStatus(Enum):
+    """Status of a fix operation"""
+    SUCCESS = "success"
+    FAILED = "failed"
+    SKIPPED = "skipped"
+    MANUAL_REQUIRED = "manual_required"
+    ALREADY_FIXED = "already_fixed"
+
+
+@dataclass
+class VulnerableDependency:
+    """A vulnerable dependency found in a project"""
+    name: str
+    current_version: str
+    cve_ids: List[str]
+    severity: Severity
+    patched_version: Optional[str]
+    is_dev_dep: bool = False
+    file_path: str = ""
+
+
+@dataclass
+class FixResult:
+    """Result of attempting to fix a vulnerability"""
+    dependency: VulnerableDependency
+    status: FixStatus
+    message: str
+    old_version: str
+    new_version: Optional[str] = None
+    backup_path: Optional[str] = None
+
+
+@dataclass
+class FixReport:
+    """Complete report of fix operations"""
+    project_path: str
+    scan_time: datetime
+    total_vulnerabilities: int
+    fixed: int
+    failed: int
+    skipped: int
+    manual_required: int
+    results: List[FixResult] = field(default_factory=list)
+    backup_dir: str = ""
 
 
 class AutoFixer:
-    """Automated scan, patch, and verify workflow"""
+    """
+    Automatic vulnerability fixer for npm projects
+    """
 
-    NEXTJS_PATCHES = {
-        '16.': '16.0.7',
-        '15.5.': '15.5.7',
-        '15.4.': '15.4.8',
-        '15.3.': '15.3.6',
-        '15.2.': '15.2.6',
-        '15.1.': '15.1.9',
-        '15.0.': '15.0.5',
-    }
+    # Version patterns for semver
+    SEMVER_PATTERN = re.compile(r'^[\^~]?(\d+)\.(\d+)\.(\d+)(?:-[a-zA-Z0-9.]+)?$')
 
-    def __init__(self, scan_path: str, backup: bool = True):
-        self.scan_path = scan_path
-        self.backup = backup
-        self.scanner = CVEScanner()
-        self.remediator = Remediator()
-        self.results = {
-            'initial_scan': None,
-            'patched': [],
-            'failed': [],
-            'verification_scan': None
-        }
+    # Package version constraints
+    VERSION_PREFIXES = ('^', '~', '>=', '>', '<=', '<', '=')
 
-    def get_nextjs_patch(self, version: str) -> str:
-        """Get Next.js patch version"""
-        for prefix, patch in self.NEXTJS_PATCHES.items():
-            if version.startswith(prefix):
-                return patch
-        return '15.5.7'
+    def __init__(self, backup_dir: str = "/tmp/shellockolm/backups"):
+        self.vuln_db = VulnerabilityDatabase()
+        self.backup_dir = Path(backup_dir)
+        self.backup_dir.mkdir(parents=True, exist_ok=True)
 
-    def step1_initial_scan(self):
-        """Step 1: Initial vulnerability scan"""
-        print("\n" + "=" * 70)
-        print("STEP 1: INITIAL VULNERABILITY SCAN")
-        print("=" * 70)
-        print(f"Scanning: {self.scan_path}")
-        print()
+    def scan_project(self, project_path: str) -> List[VulnerableDependency]:
+        """Scan a project for vulnerable dependencies"""
+        vulnerabilities = []
+        project = Path(project_path)
 
-        results = self.scanner.scan_directory(self.scan_path, recursive=True)
-        self.results['initial_scan'] = results
+        # Read package.json
+        pkg_json_path = project / "package.json"
+        if not pkg_json_path.exists():
+            return vulnerabilities
 
-        summary = results['summary']
-        print(f"Total projects: {summary['total_projects']}")
-        print(f"Vulnerable:     {summary['vulnerable_projects']}")
-        print(f"Safe:           {summary['safe_projects']}")
+        try:
+            pkg_data = json.loads(pkg_json_path.read_text())
+        except json.JSONDecodeError:
+            return vulnerabilities
 
-        if summary['vulnerable_projects'] == 0:
-            print("\n[OK] No vulnerable projects found!")
-            return False
+        # Check all dependencies
+        deps = pkg_data.get("dependencies", {})
+        dev_deps = pkg_data.get("devDependencies", {})
 
-        print(f"\n[!] Found {summary['vulnerable_projects']} vulnerable projects")
-        return True
+        # Get all vulnerabilities from our database
+        all_vulns = self.vuln_db.get_all_vulnerabilities()
 
-    def step2_patch_all(self):
-        """Step 2: Patch all vulnerable projects"""
-        print("\n" + "=" * 70)
-        print("STEP 2: PATCHING VULNERABLE PROJECTS")
-        print("=" * 70)
-        print(f"Backup enabled: {self.backup}")
-        print()
+        # Create lookup by package name
+        vuln_lookup: Dict[str, List[Any]] = {}
+        for vuln in all_vulns:
+            for pkg in vuln.packages:
+                if pkg not in vuln_lookup:
+                    vuln_lookup[pkg] = []
+                vuln_lookup[pkg].append(vuln)
 
-        vulnerable = self.results['initial_scan']['vulnerable_projects']
-        total = len(vulnerable)
+        # Check regular dependencies
+        for dep_name, dep_version in deps.items():
+            if dep_name in vuln_lookup:
+                for vuln in vuln_lookup[dep_name]:
+                    if self._is_vulnerable(dep_version, vuln):
+                        patched = vuln.patched_versions.get(dep_name)
+                        vulnerabilities.append(VulnerableDependency(
+                            name=dep_name,
+                            current_version=dep_version,
+                            cve_ids=[vuln.cve_id],
+                            severity=vuln.severity,
+                            patched_version=patched,
+                            is_dev_dep=False,
+                            file_path=str(pkg_json_path),
+                        ))
 
-        for i, vp in enumerate(vulnerable, 1):
-            project_path = vp['path']
-            package_json = Path(project_path) / "package.json"
+        # Check dev dependencies
+        for dep_name, dep_version in dev_deps.items():
+            if dep_name in vuln_lookup:
+                for vuln in vuln_lookup[dep_name]:
+                    if self._is_vulnerable(dep_version, vuln):
+                        patched = vuln.patched_versions.get(dep_name)
+                        vulnerabilities.append(VulnerableDependency(
+                            name=dep_name,
+                            current_version=dep_version,
+                            cve_ids=[vuln.cve_id],
+                            severity=vuln.severity,
+                            patched_version=patched,
+                            is_dev_dep=True,
+                            file_path=str(pkg_json_path),
+                        ))
 
-            print(f"[{i}/{total}] {project_path}")
-            print(f"  Current: React {vp['react_version']}", end='')
-            if vp['next_js_version']:
-                print(f", Next.js {vp['next_js_version']}")
-            else:
-                print()
+        return vulnerabilities
 
-            try:
-                # Patch React
-                result = self.remediator.patch_package_json(
-                    package_json,
-                    vp['recommended_version'],
-                    dry_run=False,
-                    backup=self.backup
-                )
+    def _is_vulnerable(self, installed_version: str, vuln) -> bool:
+        """Check if installed version is vulnerable"""
+        # Strip version prefix
+        version = installed_version.lstrip('^~>=<')
 
-                if result['success']:
-                    self.results['patched'].append({
-                        'project': project_path,
-                        'changes': result['changes_made'],
-                        'backup': result.get('backup_location')
-                    })
-                    print(f"  [OK] Patched!")
-                    for change in result['changes_made']:
-                        print(f"    - {change}")
-                else:
-                    self.results['failed'].append({
-                        'project': project_path,
-                        'error': result.get('errors', ['Unknown error'])
-                    })
-                    print(f"  [FAIL] Patch failed")
-
-            except Exception as e:
-                self.results['failed'].append({
-                    'project': project_path,
-                    'error': str(e)
-                })
-                print(f"  [FAIL] Error: {e}")
-
-            print()
-
-        print(f"Successfully patched: {len(self.results['patched'])}")
-        print(f"Failed: {len(self.results['failed'])}")
-
-    def step3_verify(self):
-        """Step 3: Verify all patches applied"""
-        print("\n" + "=" * 70)
-        print("STEP 3: VERIFICATION SCAN")
-        print("=" * 70)
-        print("Re-scanning to verify all vulnerabilities are fixed...")
-        print()
-
-        results = self.scanner.scan_directory(self.scan_path, recursive=True)
-        self.results['verification_scan'] = results
-
-        summary = results['summary']
-        print(f"Total projects: {summary['total_projects']}")
-        print(f"Vulnerable:     {summary['vulnerable_projects']}")
-        print(f"Safe:           {summary['safe_projects']}")
-
-        if summary['vulnerable_projects'] == 0:
-            print("\n" + "=" * 70)
-            print("[SUCCESS] ALL PROJECTS PATCHED SUCCESSFULLY!")
-            print("=" * 70)
+        # Parse version components
+        match = self.SEMVER_PATTERN.match(version)
+        if not match:
+            # Can't parse, assume vulnerable for safety
             return True
+
+        major, minor, patch = int(match.group(1)), int(match.group(2)), int(match.group(3))
+
+        # Check against affected versions
+        for affected in vuln.affected_versions:
+            if self._version_matches_range(major, minor, patch, affected):
+                return True
+
+        return False
+
+    def _version_matches_range(self, major: int, minor: int, patch: int, range_str: str) -> bool:
+        """Check if version matches a version range"""
+        # Handle common range patterns
+        range_str = range_str.strip()
+
+        if range_str.startswith('<'):
+            # Less than
+            target = range_str.lstrip('<= ')
+            target_match = self.SEMVER_PATTERN.match(target)
+            if target_match:
+                t_major, t_minor, t_patch = int(target_match.group(1)), int(target_match.group(2)), int(target_match.group(3))
+                return (major, minor, patch) < (t_major, t_minor, t_patch)
+        elif range_str.startswith('>'):
+            # Greater than
+            target = range_str.lstrip('>= ')
+            target_match = self.SEMVER_PATTERN.match(target)
+            if target_match:
+                t_major, t_minor, t_patch = int(target_match.group(1)), int(target_match.group(2)), int(target_match.group(3))
+                return (major, minor, patch) > (t_major, t_minor, t_patch)
+        elif '-' in range_str:
+            # Range like "1.0.0 - 2.0.0"
+            parts = range_str.split('-')
+            if len(parts) == 2:
+                low = parts[0].strip()
+                high = parts[1].strip()
+                low_match = self.SEMVER_PATTERN.match(low)
+                high_match = self.SEMVER_PATTERN.match(high)
+                if low_match and high_match:
+                    l_major, l_minor, l_patch = int(low_match.group(1)), int(low_match.group(2)), int(low_match.group(3))
+                    h_major, h_minor, h_patch = int(high_match.group(1)), int(high_match.group(2)), int(high_match.group(3))
+                    return (l_major, l_minor, l_patch) <= (major, minor, patch) <= (h_major, h_minor, h_patch)
         else:
-            print("\n" + "=" * 70)
-            print(f"[WARNING] {summary['vulnerable_projects']} projects still vulnerable")
-            print("=" * 70)
+            # Exact version or wildcard
+            if '*' in range_str or 'x' in range_str.lower():
+                return True
+            target_match = self.SEMVER_PATTERN.match(range_str)
+            if target_match:
+                t_major, t_minor, t_patch = int(target_match.group(1)), int(target_match.group(2)), int(target_match.group(3))
+                return (major, minor, patch) == (t_major, t_minor, t_patch)
 
-            # Show which projects are still vulnerable
-            print("\nStill vulnerable:")
-            for vp in results['vulnerable_projects']:
-                print(f"  - {vp['path']}: React {vp['react_version']}")
+        return False
 
+    def create_backup(self, project_path: str) -> str:
+        """Create a backup of package.json and lockfiles"""
+        project = Path(project_path)
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        backup_subdir = self.backup_dir / f"backup_{timestamp}"
+        backup_subdir.mkdir(parents=True, exist_ok=True)
+
+        # Backup package.json
+        pkg_json = project / "package.json"
+        if pkg_json.exists():
+            shutil.copy2(pkg_json, backup_subdir / "package.json")
+
+        # Backup package-lock.json
+        pkg_lock = project / "package-lock.json"
+        if pkg_lock.exists():
+            shutil.copy2(pkg_lock, backup_subdir / "package-lock.json")
+
+        # Backup yarn.lock
+        yarn_lock = project / "yarn.lock"
+        if yarn_lock.exists():
+            shutil.copy2(yarn_lock, backup_subdir / "yarn.lock")
+
+        # Backup pnpm-lock.yaml
+        pnpm_lock = project / "pnpm-lock.yaml"
+        if pnpm_lock.exists():
+            shutil.copy2(pnpm_lock, backup_subdir / "pnpm-lock.yaml")
+
+        # Save metadata
+        metadata = {
+            "project_path": str(project),
+            "backup_time": datetime.now().isoformat(),
+            "files_backed_up": [f.name for f in backup_subdir.iterdir()],
+        }
+        (backup_subdir / "metadata.json").write_text(json.dumps(metadata, indent=2))
+
+        return str(backup_subdir)
+
+    def fix_vulnerability(self, project_path: str, vuln: VulnerableDependency,
+                          dry_run: bool = False) -> FixResult:
+        """Fix a single vulnerability by updating package version"""
+        project = Path(project_path)
+        pkg_json_path = project / "package.json"
+
+        if not vuln.patched_version:
+            return FixResult(
+                dependency=vuln,
+                status=FixStatus.MANUAL_REQUIRED,
+                message=f"No patched version available for {vuln.name}",
+                old_version=vuln.current_version,
+            )
+
+        try:
+            pkg_data = json.loads(pkg_json_path.read_text())
+        except Exception as e:
+            return FixResult(
+                dependency=vuln,
+                status=FixStatus.FAILED,
+                message=f"Failed to read package.json: {e}",
+                old_version=vuln.current_version,
+            )
+
+        # Determine which dependency section
+        dep_key = "devDependencies" if vuln.is_dev_dep else "dependencies"
+
+        if dep_key not in pkg_data or vuln.name not in pkg_data[dep_key]:
+            return FixResult(
+                dependency=vuln,
+                status=FixStatus.SKIPPED,
+                message=f"Package {vuln.name} not found in {dep_key}",
+                old_version=vuln.current_version,
+            )
+
+        old_version = pkg_data[dep_key][vuln.name]
+
+        # Preserve version prefix (^, ~, etc.)
+        prefix = ""
+        for p in self.VERSION_PREFIXES:
+            if old_version.startswith(p):
+                prefix = p
+                break
+
+        new_version = f"{prefix}{vuln.patched_version}"
+
+        if dry_run:
+            return FixResult(
+                dependency=vuln,
+                status=FixStatus.SUCCESS,
+                message=f"[DRY RUN] Would update {vuln.name}: {old_version} -> {new_version}",
+                old_version=old_version,
+                new_version=new_version,
+            )
+
+        # Update package.json
+        pkg_data[dep_key][vuln.name] = new_version
+
+        try:
+            pkg_json_path.write_text(json.dumps(pkg_data, indent=2) + "\n")
+        except Exception as e:
+            return FixResult(
+                dependency=vuln,
+                status=FixStatus.FAILED,
+                message=f"Failed to write package.json: {e}",
+                old_version=old_version,
+            )
+
+        return FixResult(
+            dependency=vuln,
+            status=FixStatus.SUCCESS,
+            message=f"Updated {vuln.name}: {old_version} -> {new_version}",
+            old_version=old_version,
+            new_version=new_version,
+        )
+
+    def fix_all(self, project_path: str, dry_run: bool = False,
+                severity_threshold: Optional[Severity] = None,
+                create_backup: bool = True) -> FixReport:
+        """Fix all vulnerabilities in a project"""
+        project = Path(project_path)
+
+        # Scan for vulnerabilities
+        vulnerabilities = self.scan_project(str(project))
+
+        # Filter by severity if threshold specified
+        if severity_threshold:
+            severity_order = [Severity.CRITICAL, Severity.HIGH, Severity.MEDIUM, Severity.LOW]
+            threshold_idx = severity_order.index(severity_threshold)
+            vulnerabilities = [v for v in vulnerabilities
+                            if severity_order.index(v.severity) <= threshold_idx]
+
+        # Create backup
+        backup_path = ""
+        if create_backup and not dry_run:
+            backup_path = self.create_backup(str(project))
+
+        # Fix each vulnerability
+        results = []
+        fixed = 0
+        failed = 0
+        skipped = 0
+        manual_required = 0
+
+        for vuln in vulnerabilities:
+            result = self.fix_vulnerability(str(project), vuln, dry_run=dry_run)
+            results.append(result)
+
+            if result.status == FixStatus.SUCCESS:
+                fixed += 1
+            elif result.status == FixStatus.FAILED:
+                failed += 1
+            elif result.status == FixStatus.SKIPPED:
+                skipped += 1
+            elif result.status == FixStatus.MANUAL_REQUIRED:
+                manual_required += 1
+
+        return FixReport(
+            project_path=str(project),
+            scan_time=datetime.now(),
+            total_vulnerabilities=len(vulnerabilities),
+            fixed=fixed,
+            failed=failed,
+            skipped=skipped,
+            manual_required=manual_required,
+            results=results,
+            backup_dir=backup_path,
+        )
+
+    def rollback(self, backup_path: str, project_path: str) -> bool:
+        """Rollback to a previous backup"""
+        backup = Path(backup_path)
+        project = Path(project_path)
+
+        if not backup.exists():
             return False
 
-    def generate_install_script(self):
-        """Generate npm install script"""
-        if not self.results['patched']:
-            return
+        try:
+            # Restore package.json
+            backup_pkg = backup / "package.json"
+            if backup_pkg.exists():
+                shutil.copy2(backup_pkg, project / "package.json")
 
-        script_file = "install_patches.sh"
-        lines = [
-            "#!/bin/bash",
-            "# Auto-generated npm install script for patched projects",
-            f"# Generated: {datetime.now().isoformat()}",
-            "",
-            "set -e",
-            "echo 'Installing patched dependencies...'",
-            ""
-        ]
+            # Restore lockfiles
+            for lockfile in ["package-lock.json", "yarn.lock", "pnpm-lock.yaml"]:
+                backup_lock = backup / lockfile
+                if backup_lock.exists():
+                    shutil.copy2(backup_lock, project / lockfile)
 
-        for i, result in enumerate(self.results['patched'], 1):
-            lines.extend([
-                f"# Project {i}: {result['project']}",
-                f"echo '[{i}/{len(self.results['patched'])}] {result['project']}'",
-                f"cd '{result['project']}'",
-                "npm install",
-                "echo ''",
-                ""
-            ])
+            return True
+        except Exception:
+            return False
 
-        lines.extend([
-            "echo 'All dependencies installed!'",
-            "echo 'Next: Run npm run build for each project'",
-            ""
-        ])
-
-        with open(script_file, 'w') as f:
-            f.write('\n'.join(lines))
-
-        print(f"\nGenerated install script: {script_file}")
-        return script_file
-
-    def save_report(self):
-        """Save detailed report"""
-        report_file = f"auto_fix_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-
-        report = {
-            'timestamp': datetime.now().isoformat(),
-            'scan_path': self.scan_path,
-            'backup_enabled': self.backup,
-            'initial_scan': {
-                'total': self.results['initial_scan']['summary']['total_projects'],
-                'vulnerable': self.results['initial_scan']['summary']['vulnerable_projects'],
-                'safe': self.results['initial_scan']['summary']['safe_projects']
+    def generate_report(self, report: FixReport, output_path: Optional[str] = None) -> Dict[str, Any]:
+        """Generate a detailed fix report"""
+        output = {
+            "project_path": report.project_path,
+            "scan_time": report.scan_time.isoformat(),
+            "backup_dir": report.backup_dir,
+            "summary": {
+                "total_vulnerabilities": report.total_vulnerabilities,
+                "fixed": report.fixed,
+                "failed": report.failed,
+                "skipped": report.skipped,
+                "manual_required": report.manual_required,
             },
-            'patching': {
-                'patched': len(self.results['patched']),
-                'failed': len(self.results['failed']),
-                'details': self.results['patched'],
-                'failures': self.results['failed']
-            },
-            'verification': {
-                'total': self.results['verification_scan']['summary']['total_projects'],
-                'vulnerable': self.results['verification_scan']['summary']['vulnerable_projects'],
-                'safe': self.results['verification_scan']['summary']['safe_projects'],
-                'remaining_vulnerabilities': self.results['verification_scan']['vulnerable_projects']
-            }
+            "fixes": [],
         }
 
-        with open(report_file, 'w') as f:
-            json.dump(report, f, indent=2)
+        for result in report.results:
+            fix = {
+                "package": result.dependency.name,
+                "cve_ids": result.dependency.cve_ids,
+                "severity": result.dependency.severity.value,
+                "status": result.status.value,
+                "message": result.message,
+                "old_version": result.old_version,
+                "new_version": result.new_version,
+            }
+            output["fixes"].append(fix)
 
-        print(f"Detailed report saved: {report_file}")
-        return report_file
+        if output_path:
+            Path(output_path).parent.mkdir(parents=True, exist_ok=True)
+            Path(output_path).write_text(json.dumps(output, indent=2))
 
-    def run(self):
-        """Run complete auto-fix workflow"""
-        print("=" * 70)
-        print("CVE-2025-55182 AUTO-FIX TOOL")
-        print("Automated: Scan > Patch > Verify")
-        print("=" * 70)
+        return output
 
-        # Step 1: Initial scan
-        has_vulnerabilities = self.step1_initial_scan()
-        if not has_vulnerabilities:
-            return
 
-        # Step 2: Patch all
-        self.step2_patch_all()
-
-        # Step 3: Verify
-        all_fixed = self.step3_verify()
-
-        # Generate install script
-        script_file = self.generate_install_script()
-
-        # Save report
-        report_file = self.save_report()
-
-        # Final summary
-        print("\n" + "=" * 70)
-        print("AUTO-FIX SUMMARY")
-        print("=" * 70)
-        print(f"Projects scanned:      {self.results['initial_scan']['summary']['total_projects']}")
-        print(f"Initially vulnerable:  {self.results['initial_scan']['summary']['vulnerable_projects']}")
-        print(f"Successfully patched:  {len(self.results['patched'])}")
-        print(f"Failed to patch:       {len(self.results['failed'])}")
-        print(f"Still vulnerable:      {self.results['verification_scan']['summary']['vulnerable_projects']}")
-        print()
-
-        if all_fixed:
-            print("[SUCCESS] All vulnerabilities fixed!")
-        else:
-            print("[WARNING] Some projects still vulnerable - check report")
-
-        print(f"\nNext steps:")
-        print(f"  1. Run: bash {script_file}")
-        print(f"  2. Build each project: npm run build")
-        print(f"  3. Test thoroughly before deploying")
-        print(f"\nReport: {report_file}")
-
+# ─────────────────────────────────────────────────────────────────
+# CLI INTEGRATION
+# ─────────────────────────────────────────────────────────────────
 
 def main():
-    import argparse
+    """CLI entry point for auto-fix"""
+    import sys
 
-    parser = argparse.ArgumentParser(
-        description='Auto-fix CVE-2025-55182 vulnerabilities (scan-patch-verify)'
-    )
-    parser.add_argument(
-        'path',
-        help='Path to scan and patch'
-    )
-    parser.add_argument(
-        '--no-backup',
-        action='store_true',
-        help='Skip creating backups (not recommended)'
-    )
+    if len(sys.argv) < 2:
+        print("Usage: shellockolm-fix <project-path> [--dry-run] [--critical-only]")
+        sys.exit(1)
 
-    args = parser.parse_args()
+    project_path = sys.argv[1]
+    dry_run = "--dry-run" in sys.argv
+    critical_only = "--critical-only" in sys.argv
 
-    fixer = AutoFixer(args.path, backup=not args.no_backup)
-    fixer.run()
+    fixer = AutoFixer()
+
+    threshold = Severity.CRITICAL if critical_only else None
+    report = fixer.fix_all(project_path, dry_run=dry_run, severity_threshold=threshold)
+
+    # Print results
+    print(f"\n{'[DRY RUN] ' if dry_run else ''}Auto-Fix Report")
+    print("=" * 50)
+    print(f"Project: {report.project_path}")
+    print(f"Total vulnerabilities: {report.total_vulnerabilities}")
+    print(f"Fixed: {report.fixed}")
+    print(f"Failed: {report.failed}")
+    print(f"Manual required: {report.manual_required}")
+
+    if report.backup_dir:
+        print(f"Backup: {report.backup_dir}")
+
+    print("\nDetails:")
+    for result in report.results:
+        status_icon = "✓" if result.status == FixStatus.SUCCESS else "✗" if result.status == FixStatus.FAILED else "⚠"
+        print(f"  {status_icon} {result.dependency.name}: {result.message}")
 
 
 if __name__ == "__main__":
-    try:
-        main()
-    except KeyboardInterrupt:
-        print("\n\nAuto-fix interrupted")
-        sys.exit(1)
-    except Exception as e:
-        print(f"\n\nError: {e}")
-        import traceback
-        traceback.print_exc()
-        sys.exit(1)
+    main()
