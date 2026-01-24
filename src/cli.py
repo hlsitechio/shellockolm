@@ -880,6 +880,13 @@ MENU_CATEGORIES = {
                 "input_prompt": "Enter path to scan (or . for current dir): ",
             },
             {
+                "id": "1a",
+                "name": "Scan ALL npm",
+                "description": "Auto-detect and scan ALL npm projects on your system (home dir, npm cache, common locations). Finds all package.json/lockfiles.",
+                "action": "scan-all-npm",
+                "requires_input": None,
+            },
+            {
                 "id": "2",
                 "name": "React Scanner",
                 "description": "Scan for React Server Components RCE vulnerabilities (CVE-2025-55182, CVE-2025-66478). Detects vulnerable react, react-server-dom-webpack packages.",
@@ -1439,11 +1446,12 @@ def show_main_menu():
     t1.add_column("[yellow]CVE[/yellow]", width=15)
     t1.add_column("[red]MALWARE[/red]", width=15)
     t1.add_row("[cyan][ 1][/cyan] Full Scan", "[green][ 8][/green] Probe All", "[yellow][11][/yellow] List All", "[red][17][/red] Deep Scan")
-    t1.add_row("[cyan][ 2][/cyan] React", "[green][ 9][/green] Next.js", "[yellow][12][/yellow] Critical", "[red][18][/red] Quick")
-    t1.add_row("[cyan][ 3][/cyan] Next.js", "[green][10][/green] n8n", "[yellow][13][/yellow] Bounty", "[red][19][/red] Quarantine")
-    t1.add_row("[cyan][ 4][/cyan] npm Pkgs", "", "[yellow][14][/yellow] Details", "[red][20][/red] Remove")
-    t1.add_row("[cyan][ 5][/cyan] Node.js", "", "[yellow][15][/yellow] By Pkg", "[red][21][/red] Cleanup")
-    t1.add_row("[cyan][ 6][/cyan] n8n", "", "[yellow][16][/yellow] Export", "[red][22][/red] Report")
+    t1.add_row("[cyan][1a][/cyan] ALL npm", "[green][ 9][/green] Next.js", "[yellow][12][/yellow] Critical", "[red][18][/red] Quick")
+    t1.add_row("[cyan][ 2][/cyan] React", "[green][10][/green] n8n", "[yellow][13][/yellow] Bounty", "[red][19][/red] Quarantine")
+    t1.add_row("[cyan][ 3][/cyan] Next.js", "", "[yellow][14][/yellow] Details", "[red][20][/red] Remove")
+    t1.add_row("[cyan][ 4][/cyan] npm Pkgs", "", "[yellow][15][/yellow] By Pkg", "[red][21][/red] Cleanup")
+    t1.add_row("[cyan][ 5][/cyan] Node.js", "", "[yellow][16][/yellow] Export", "[red][22][/red] Report")
+    t1.add_row("[cyan][ 6][/cyan] n8n", "", "", "")
     t1.add_row("[cyan][ 7][/cyan] Chain", "", "", "")
     console.print(t1)
 
@@ -1975,6 +1983,70 @@ def interactive_shell():
                             i += 1
                     scan(path=path, scanner=scanner_name, output=output_file, recursive=True, max_depth=10, verbose=False, quiet=False)
                     next_step_type = "scan_clean"  # Will be updated if exit code 1
+
+                elif cmd_name == "scan-all-npm":
+                    # Auto-detect and scan all npm projects on the system
+                    console.print(f"\n[title]🔍 Scanning ALL npm Projects on System[/title]\n")
+
+                    home_dir = Path.home()
+                    search_paths = [
+                        home_dir / ".npm",                    # npm cache
+                        home_dir / "node_modules",            # global node_modules
+                        home_dir / "projects",                # common project folder
+                        home_dir / "code",                    # another common folder
+                        home_dir / "dev",                     # dev folder
+                        Path("/mnt"),                         # mounted drives
+                        Path("/opt"),                         # opt folder
+                    ]
+
+                    # Find all package.json files
+                    console.print("[info]Searching for npm projects...[/info]")
+                    found_projects = set()
+
+                    for search_path in search_paths:
+                        if search_path.exists():
+                            console.print(f"  [dim]Checking {search_path}...[/dim]")
+                            try:
+                                import subprocess
+                                result = subprocess.run(
+                                    ["find", str(search_path), "-maxdepth", "6", "-name", "package.json", "-type", "f"],
+                                    capture_output=True, text=True, timeout=30
+                                )
+                                for line in result.stdout.strip().split("\n"):
+                                    if line and "node_modules" not in line:
+                                        project_dir = str(Path(line).parent)
+                                        found_projects.add(project_dir)
+                            except Exception as e:
+                                console.print(f"  [dim]Skipped {search_path}: {e}[/dim]")
+
+                    if not found_projects:
+                        console.print("[warning]No npm projects found on system.[/warning]")
+                    else:
+                        console.print(f"\n[success]Found {len(found_projects)} npm projects![/success]\n")
+
+                        total_findings = 0
+                        for i, project in enumerate(sorted(found_projects)[:20], 1):  # Limit to 20
+                            console.print(f"[info]({i}/{min(len(found_projects), 20)}) Scanning: {project}[/info]")
+                            try:
+                                # Run scan quietly and count findings
+                                from scanners import get_all_scanners
+                                for scanner_obj in get_all_scanners():
+                                    result = scanner_obj.scan_directory(project, recursive=True, max_depth=5)
+                                    if result.findings:
+                                        total_findings += len(result.findings)
+                                        for finding in result.findings:
+                                            print_finding(finding, verbose=False)
+                            except Exception as e:
+                                console.print(f"  [dim]Error: {e}[/dim]")
+
+                        console.print(f"\n[title]═══ SYSTEM-WIDE SCAN COMPLETE ═══[/title]")
+                        console.print(f"  📁 Projects scanned: {min(len(found_projects), 20)}")
+                        console.print(f"  📊 Total findings: {total_findings}")
+
+                        if total_findings > 0:
+                            next_step_type = "scan"
+                        else:
+                            next_step_type = "scan_clean"
 
                 elif cmd_name == "live":
                     url = cmd_args[-1] if cmd_args else ""
