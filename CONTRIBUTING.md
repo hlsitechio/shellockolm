@@ -25,7 +25,39 @@ Before contributing, ensure you have:
 - **GitHub account** for pull requests
 - Familiarity with Python and security concepts
 
-### Fork and Clone
+### Quick Setup (Use Our Installers!)
+
+The **fastest way** to get set up is to use our one-line installers:
+
+**Windows:**
+```powershell
+iex (irm https://raw.githubusercontent.com/hlsitechio/shellockolm/main/install.ps1)
+```
+
+**Ubuntu/Debian:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/hlsitechio/shellockolm/main/install-debian.sh | bash
+```
+
+**Arch Linux:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/hlsitechio/shellockolm/main/install-arch.sh | bash
+```
+
+**macOS:**
+```bash
+curl -fsSL https://raw.githubusercontent.com/hlsitechio/shellockolm/main/install.sh | bash
+```
+
+These installers automatically:
+- ✅ Check/install Python 3.10+
+- ✅ Install all dependencies
+- ✅ Set up your environment
+- ✅ Verify installation
+
+### Manual Setup (Traditional)
+
+If you prefer manual setup:
 
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
@@ -37,25 +69,13 @@ Before contributing, ensure you have:
    ```bash
    git remote add upstream https://github.com/hlsitechio/shellockolm.git
    ```
-
-### Development Setup
-
-```bash
-# Create virtual environment
-python -m venv venv
-
-# Activate virtual environment
-# Windows:
-venv\Scripts\activate
-# Linux/Mac:
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Install development dependencies (if available)
-pip install pytest black flake8 mypy
-```
+4. **Install dependencies**:
+   ```bash
+   pip install -r requirements.txt
+   
+   # Optional: Development dependencies
+   pip install pytest black flake8 mypy
+   ```
 
 ## 📝 Contribution Workflow
 
@@ -92,11 +112,14 @@ git checkout -b fix/issue-description
 ### 3. Test Your Changes
 
 ```bash
-# Run the scanner
-python scan_simple.py ./test_data
+# Run the scanner via CLI
+python src/cli.py scan ./test_data
 
-# Run auto-fix (dry run)
-python auto_fix.py ./test_data --no-backup
+# Run interactive shell
+python src/cli.py
+
+# Run specific scanner
+python src/cli.py scan ./test_data --scanner react
 
 # Run tests (if available)
 pytest tests/
@@ -403,22 +426,25 @@ Need help contributing?
 We especially welcome contributions in:
 
 ### High Priority
-- 🔍 **Additional CVE detection** - Support for other React vulnerabilities
-- 🧪 **Test coverage** - Comprehensive test suite
+- 🔍 **Additional CVE detection** - Track new React/Node.js/npm vulnerabilities
+- 🧪 **Test coverage** - Comprehensive test suite for all scanners
 - 🌐 **Framework support** - Vue, Angular, Svelte scanners
 - 🚀 **Performance** - Optimize scanning for large codebases
+- 📦 **Installer improvements** - Support more Linux distros (Fedora, openSUSE, etc.)
 
 ### Medium Priority
-- 📚 **Documentation** - Improve guides and examples
+- 📚 **Documentation** - Improve guides, add video tutorials
 - 🐛 **Bug fixes** - Address reported issues
-- 🎨 **UI/UX** - Better CLI output formatting
+- 🎨 **UI/UX** - Better CLI output formatting, colors, progress bars
 - 🌍 **Internationalization** - Multi-language support
+- 🔧 **Auto-fix improvements** - Better rollback, more granular fixes
 
 ### Nice to Have
-- 📊 **Reporting** - Enhanced report formats (PDF, HTML)
-- 🔌 **IDE integrations** - VS Code extension
-- 📦 **Package managers** - PyPI publishing
-- 🤖 **CI/CD** - GitHub Actions workflows
+- 📊 **Reporting** - Enhanced report formats (PDF, HTML, Markdown)
+- 🔌 **IDE integrations** - VS Code/JetBrains extensions
+- 📦 **Package managers** - PyPI, Homebrew, Chocolatey, AUR packages
+- 🤖 **CI/CD templates** - GitLab CI, CircleCI, Azure Pipelines
+- 🎬 **Demo content** - Screen recordings, animated GIFs, tutorial videos
 
 ## 📝 License
 

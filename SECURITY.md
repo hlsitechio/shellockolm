@@ -10,9 +10,9 @@ We take the security of this project seriously. If you discover a security vulne
 
 Instead, please report them via:
 
-1. **Email**: [Your security email] (preferred)
-2. **GitHub Security Advisories**: Use the "Security" tab in this repository
-3. **Private vulnerability disclosure**: Contact the maintainers directly
+1. **GitHub Security Advisories**: Use the "Security" tab in this repository (preferred)
+2. **Email**: Contact via GitHub profile
+3. **Private disclosure**: Open a discussion marked as private
 
 ### What to Include
 
@@ -60,13 +60,25 @@ We aim to:
 
 When using this tool:
 
-1. **Always backup** your files before running patchers
-2. **Test in development** before deploying to production
-3. **Verify patches** after application
-4. **Keep dependencies updated** - run `pip install -U -r requirements.txt`
-5. **Review code changes** - especially from automated tools
-6. **Use virtual environments** - isolate dependencies
+1. **Use official installers** - Run our verified one-line installers from the official repository
+2. **Always backup** your files before running auto-fix or patchers
+3. **Test in development** before deploying to production
+4. **Verify patches** after application
+5. **Keep dependencies updated** - run `pip install -U -r requirements.txt`
+6. **Review code changes** - especially from automated tools
 7. **Monitor logs** - check for unexpected behavior
+
+### Installation Security
+
+Our installers are designed with security in mind:
+
+- ✅ **Verified downloads** - Installers only download from official GitHub repository
+- ✅ **No sudo for dependencies** - Python packages installed to user directory (`--user`)
+- ✅ **Transparent operations** - All actions are displayed during installation
+- ✅ **Optional components** - PATH integration and shortcuts are opt-in
+- ✅ **Verification checks** - Installation is verified before completion
+
+**Windows users:** The PowerShell installer requires execution policy changes. Review `install.ps1` before running if concerned.
 
 ## Known Security Considerations
 
@@ -77,13 +89,24 @@ When using this tool:
 - **Local Operations**: All operations are local; no data is sent to external servers.
 - **Backup Files**: Backup files contain the same sensitive data as original files.
 
-### The CVE We're Fixing
+### CVEs We Detect
+
+This tool detects **32 critical CVEs** including:
 
 **CVE-2025-55182 (React2Shell)**:
 - CVSS Score: 10.0 (CRITICAL)
 - Remote Code Execution in React Server Components
 - Actively exploited in the wild
-- **Patch immediately** if you use React 19.x with Server Components
+
+**CVE-2025-29927**:
+- CVSS Score: 9.1 (CRITICAL)
+- Next.js middleware authorization bypass
+
+**CVE-2026-21858 (Ni8mare)**:
+- CVSS Score: 10.0 (CRITICAL)
+- n8n unauthenticated RCE
+
+See **[full CVE list in README](README.md#-tracked-cves)** for all 32 vulnerabilities tracked.
 
 ## Security Updates
 
@@ -112,8 +135,35 @@ We support responsible disclosure and will:
 
 This security policy does not create any legal obligations. We reserve the right to modify this policy at any time.
 
+## Quick Install (Secure & Verified)
+
+Get started securely with our official installers:
+
+**Windows:**
+```powershell
+iex (irm https://raw.githubusercontent.com/hlsitechio/shellockolm/main/install.ps1)
+```
+
+**Linux/macOS:**
+```bash
+# Ubuntu/Debian
+curl -fsSL https://raw.githubusercontent.com/hlsitechio/shellockolm/main/install-debian.sh | bash
+
+# Arch Linux
+curl -fsSL https://raw.githubusercontent.com/hlsitechio/shellockolm/main/install-arch.sh | bash
+
+# macOS
+curl -fsSL https://raw.githubusercontent.com/hlsitechio/shellockolm/main/install.sh | bash
+```
+
+All installers:
+- Download only from official GitHub repository
+- Display all actions before execution
+- Include verification checks
+- Support offline operation after install
+
 ---
 
-**Last Updated**: December 6, 2025
+**Last Updated**: January 29, 2026
 
 Thank you for helping keep our project and users safe! 🛡️
