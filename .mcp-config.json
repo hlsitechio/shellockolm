@@ -1,0 +1,17 @@
+{
+  "$schema": "https://modelcontextprotocol.io/schema/config.json",
+  "mcpServers": {
+    "shellockolm": {
+      "command": "python",
+      "args": ["src/mcp_server.py"],
+      "cwd": "${workspaceFolder}",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}/src",
+        "SHELLOCKOLM_LOG_LEVEL": "INFO"
+      },
+      "description": "Security scanner for React/Next.js/Node.js - finds CVEs, malware, secrets",
+      "autoStart": false,
+      "transportType": "stdio"
+    }
+  }
+}

@@ -13,9 +13,13 @@ Covers 29 CVEs across:
 
 import asyncio
 import json
+import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from datetime import datetime
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent))
 
 from mcp.server.models import InitializationOptions
 from mcp.server import NotificationOptions, Server

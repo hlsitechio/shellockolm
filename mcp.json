@@ -1,0 +1,58 @@
+{
+  "name": "shellockolm",
+  "version": "2.0.0",
+  "description": "Security scanner for React, Next.js, Node.js & npm - finds CVEs, malware, secrets. 32 CVEs tracked.",
+  "homepage": "https://github.com/hlsitechio/shellockolm",
+  "author": "hlsitechio",
+  "license": "MIT",
+  "server": {
+    "command": "python",
+    "args": ["src/mcp_server.py"],
+    "env": {}
+  },
+  "capabilities": {
+    "tools": [
+      {
+        "name": "scan_directory",
+        "description": "Scan a directory for 32 CVEs in React/Next.js/Node.js/npm packages"
+      },
+      {
+        "name": "scan_live",
+        "description": "Live probe a URL for exploitable vulnerabilities (Next.js, n8n, etc.)"
+      },
+      {
+        "name": "fix_vulnerability",
+        "description": "Automatically patch a vulnerability with backup"
+      },
+      {
+        "name": "check_cve",
+        "description": "Get detailed information about a specific CVE"
+      },
+      {
+        "name": "list_cves",
+        "description": "List all 32 tracked CVEs with filters"
+      }
+    ],
+    "resources": [
+      {
+        "name": "cve_database",
+        "description": "Complete vulnerability database with 32 CVEs"
+      },
+      {
+        "name": "scan_history",
+        "description": "Historical scan results and findings"
+      }
+    ]
+  },
+  "tags": [
+    "security",
+    "vulnerability-scanner",
+    "cve",
+    "react",
+    "nextjs",
+    "nodejs",
+    "npm",
+    "malware",
+    "secrets"
+  ]
+}

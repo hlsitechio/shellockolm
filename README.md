@@ -43,7 +43,9 @@ curl -fsSL https://raw.githubusercontent.com/hlsitechio/shellockolm/main/scripts
 
 **Then run:** `python src/cli.py scan .` → ✅ **Instant security audit**
 
-📖 **[Full installation guide](docs/INSTALL.md)** | 🚀 **[Quick start](docs/QUICKSTART.md)** | ⚡ **[Fast install reference](docs/FAST_INSTALL.md)**
+🤖 **Want AI integration?** `python src/configure_mcp.py` → Use Shellockolm inside Claude/Copilot!
+
+📖 **[Full installation guide](docs/INSTALL.md)** | 🚀 **[Quick start](docs/QUICKSTART.md)** | ⚡ **[Fast install reference](docs/FAST_INSTALL.md)** | 🤖 **[MCP Setup](docs/MCP_SETUP.md)**
 
 </div>
 
@@ -445,6 +447,7 @@ MIT License — See [LICENSE](LICENSE)
 - [Contributing Guidelines](CONTRIBUTING.md)
 - [Security Policy](SECURITY.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
+- [MCP Server Setup](docs/MCP_SETUP.md)
 - [Changelog](docs/CHANGELOG.md)
 - [Privacy & Security](docs/PRIVACY_AND_SECURITY.md)
 
