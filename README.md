@@ -439,8 +439,8 @@ MIT License — See [LICENSE](LICENSE)
 
 **⭐ Star this repo if it helped secure your applications**
 
-[Get Started](#-60-second-quick-start) | [Features](#-complete-features) | [Report Issue](https://github.com/hlsitechio/shellockolm/issues)
+[Get Started](#-install--run-in-60-seconds) | [Features](#-complete-features) | [Report Issue](https://github.com/hlsitechio/shellockolm/issues)
 
-Made with 🔍 for the security community
+Made with 🔍 by [@hlsitechio](https://github.com/hlsitechio) | Powered by GitHub Copilot
 
 </div>
