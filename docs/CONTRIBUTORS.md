@@ -18,9 +18,11 @@ Thank you to everyone who has contributed to making Shellockolm better!
 💻 🎨 📖 🚀
 </td>
 <td align="center">
-<img src="https://avatars.githubusercontent.com/u/47998229?s=200&v=4" width="100px;" alt="GitHub Copilot"/>
+<a href="https://claude.ai">
+<img src="https://github.com/claude.png" width="100px;" alt="Claude"/>
 <br />
-<sub><b>GitHub Copilot</b></sub>
+<sub><b>Claude</b></sub>
+</a>
 <br />
 <sub>AI Development Partner</sub>
 <br />
@@ -41,7 +43,7 @@ Thank you to everyone who has contributed to making Shellockolm better!
 
 ## 🤖 AI Development Partner
 
-**GitHub Copilot** contributed to:
+**Claude** (by Anthropic) contributed to:
 - ✅ **Complete installer system** - One-line installers for Windows, Ubuntu/Debian, Arch, macOS
 - ✅ **Repository structure optimization** - Clean organization with scripts/, docs/, data/ folders
 - ✅ **Viral README transformation** - Story-driven documentation that converts visitors
@@ -52,9 +54,12 @@ Thank you to everyone who has contributed to making Shellockolm better!
 
 **Development approach:**
 - Pair programming with @hlsitechio
-- Real-time code suggestions and improvements
-- Architecture recommendations
+- Real-time architectural design and code generation
 - Documentation optimization for user experience
+- Strategic planning for viral growth
+
+**About Claude:**
+Claude is an AI assistant created by Anthropic. In this project, Claude served as a collaborative development partner, helping architect solutions, write code, and optimize the repository for maximum impact.
 
 ## 🌟 Community Contributors
 
