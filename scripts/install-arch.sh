@@ -91,7 +91,7 @@ if [ -d "$INSTALL_DIR" ]; then
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         rm -rf "$INSTALL_DIR"
         info "Cloning repository..."
-        git clone https://github.com/hlsitechio/shellockolm.git "$INSTALL_DIR"
+        git clone https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner.git "$INSTALL_DIR"
         success "Repository cloned"
     else
         info "Updating existing installation..."
@@ -101,7 +101,7 @@ if [ -d "$INSTALL_DIR" ]; then
     fi
 else
     info "Cloning repository..."
-    git clone https://github.com/hlsitechio/shellockolm.git "$INSTALL_DIR"
+    git clone https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner.git "$INSTALL_DIR"
     success "Repository cloned to: $INSTALL_DIR"
 fi
 

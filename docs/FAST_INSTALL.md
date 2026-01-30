@@ -12,7 +12,7 @@ iex (irm https://raw.githubusercontent.com/hlsitechio/shellockolm/main/install.p
 ```
 
 ### Download & Double-Click (No Terminal)
-1. [Download ZIP](https://github.com/hlsitechio/shellockolm/archive/refs/heads/main.zip)
+1. [Download ZIP](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/archive/refs/heads/main.zip)
 2. Extract anywhere
 3. Double-click **`setup.bat`**
 4. Done ✅

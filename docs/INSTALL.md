@@ -40,7 +40,7 @@ curl -fsSL https://raw.githubusercontent.com/hlsitechio/shellockolm/main/install
 
 ### Manual Install
 ```bash
-git clone https://github.com/hlsitechio/shellockolm.git
+git clone https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner.git
 cd shellockolm
 pip install -r requirements.txt
 python src/cli.py
@@ -209,9 +209,9 @@ Remove the alias/symlink from your shell config.
 
 ## 🆘 Still Having Issues?
 
-- [Open an issue](https://github.com/hlsitechio/shellockolm/issues)
-- [Check existing issues](https://github.com/hlsitechio/shellockolm/issues)
-- [Discussions](https://github.com/hlsitechio/shellockolm/discussions)
+- [Open an issue](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/issues)
+- [Check existing issues](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/issues)
+- [Discussions](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/discussions)
 
 ---
 

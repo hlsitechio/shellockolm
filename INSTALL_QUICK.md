@@ -6,7 +6,7 @@ Choose your platform and run one command:
 ```powershell
 iex (irm https://raw.githubusercontent.com/hlsitechio/shellockolm/main/scripts/install.ps1)
 ```
-**Or:** [Download ZIP](https://github.com/hlsitechio/shellockolm/archive/refs/heads/main.zip) → Extract → Double-click `scripts/setup.bat`
+**Or:** [Download ZIP](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/archive/refs/heads/main.zip) → Extract → Double-click `scripts/setup.bat`
 
 ## Ubuntu / Debian / Mint
 ```bash

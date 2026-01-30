@@ -93,7 +93,7 @@ GitHub Copilot is an AI pair programmer developed by GitHub and OpenAI. It provi
 
 ## 🌟 Community Contributors
 
-Contributors who have submitted pull requests, bug reports, or feature suggestions will automatically appear in [GitHub's Contributors list](https://github.com/hlsitechio/shellockolm/graphs/contributors).
+Contributors who have submitted pull requests, bug reports, or feature suggestions will automatically appear in [GitHub's Contributors list](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/graphs/contributors).
 
 ### How to Become a Contributor
 
@@ -142,7 +142,7 @@ All contributors are recognized in:
 
 <div align="center">
 
-[⭐ Star this repo](https://github.com/hlsitechio/shellockolm) | [🐛 Report bugs](https://github.com/hlsitechio/shellockolm/issues) | [💬 Join discussions](https://github.com/hlsitechio/shellockolm/discussions)
+[⭐ Star this repo](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner) | [🐛 Report bugs](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/issues) | [💬 Join discussions](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/discussions)
 
 **Built with 🔍 by humans and AI, for the security community**
 

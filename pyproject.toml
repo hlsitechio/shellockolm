@@ -64,11 +64,11 @@ dev = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/hlsitechio/shellockolm"
-Documentation = "https://github.com/hlsitechio/shellockolm/blob/main/README.md"
-Repository = "https://github.com/hlsitechio/shellockolm"
-"Bug Tracker" = "https://github.com/hlsitechio/shellockolm/issues"
-Changelog = "https://github.com/hlsitechio/shellockolm/blob/main/CHANGELOG.md"
+Homepage = "https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner"
+Documentation = "https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/blob/main/README.md"
+Repository = "https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner"
+"Bug Tracker" = "https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/issues"
+Changelog = "https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/blob/main/CHANGELOG.md"
 
 [project.scripts]
 shellockolm = "cli:main"

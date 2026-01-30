@@ -366,7 +366,7 @@ def print_banner(show_full: bool = True):
 [dim]React • Next.js • Node.js • n8n • npm • Supply Chain • Clawdbot[/dim]
 
 [bright_green]✓ 32 CVEs  ✓ 7 Scanners  ✓ Malware  ✓ Secrets  ✓ Auto-Fix[/bright_green]
-[link=https://github.com/hlsitechio/shellockolm][bright_blue]🔗 github.com/hlsitechio/shellockolm[/bright_blue][/link]
+[link=https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner][bright_blue]🔗 github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner[/bright_blue][/link]
 ────────────────────────────────────────────────────────────────────
 [bright_yellow]💡 Tip:[/bright_yellow] {tip}{session_line}"""
 
@@ -978,7 +978,7 @@ def version():
     """Show version information"""
     console.print("[title]Shellockolm v2.0.0[/title]")
     console.print("[subtitle]Security Detective for React, Next.js, Node.js & npm[/subtitle]")
-    console.print("[info]https://github.com/hlsitechio/shellockolm[/info]")
+    console.print("[info]https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner[/info]")
 
 
 def main():
@@ -2249,7 +2249,7 @@ def interactive_shell():
                     "  • 10 Critical CVEs\n"
                     "  • Public PoCs available\n"
                     "  • JSON report export\n\n"
-                    "[info]https://github.com/hlsitechio/shellockolm[/info]",
+                    "[info]https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner[/info]",
                     title="About",
                     border_style="bright_cyan",
                 ))
@@ -2267,10 +2267,10 @@ def interactive_shell():
                 console.print("[bright_yellow]⭐ Opening GitHub to star Shellockolm...[/bright_yellow]")
                 console.print("[dim]Your support helps us keep the project alive![/dim]\n")
                 try:
-                    webbrowser.open("https://github.com/hlsitechio/shellockolm")
+                    webbrowser.open("https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner")
                     console.print("[success]✓ Opened in your browser![/success]")
                 except Exception:
-                    console.print("[info]Please visit: https://github.com/hlsitechio/shellockolm[/info]")
+                    console.print("[info]Please visit: https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner[/info]")
                 console.input("[subtitle]Press Enter to continue...[/subtitle]")
                 continue
 

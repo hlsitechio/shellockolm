@@ -1,4 +1,4 @@
-﻿#Requires -Version 5.1
+#Requires -Version 5.1
 <#
 .SYNOPSIS
     Shellockolm - One-line installer for Windows
@@ -60,7 +60,7 @@ if ($IsRemoteInstall) {
             git pull origin main
         }
     } else {
-        git clone https://github.com/hlsitechio/shellockolm.git $InstallPath
+        git clone https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner.git $InstallPath
         Set-Location $InstallPath
     }
     
@@ -225,8 +225,8 @@ if ($addToPath -ne 'n' -and $addToPath -ne 'N') {
 }
 
 Write-Host "Documentation:" -ForegroundColor Cyan
-Write-Host "  → README: https://github.com/hlsitechio/shellockolm" -ForegroundColor White
-Write-Host "  → Issues: https://github.com/hlsitechio/shellockolm/issues" -ForegroundColor White
+Write-Host "  → README: https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner" -ForegroundColor White
+Write-Host "  → Issues: https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/issues" -ForegroundColor White
 Write-Host ""
 
 # Offer to run first scan

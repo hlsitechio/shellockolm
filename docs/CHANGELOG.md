@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `cve-2025-55182-patch` → `shellockolm-patch`
   - `cve-2025-55182-malware` → `shellockolm-malware`
 - New command: `shellockolm-github` for GitHub repository scanning
-- Repository URL updated to `https://github.com/hlsitechio/shellockolm`
+- Repository URL updated to `https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner`
 
 ### Added
 - **CVE-2025-66478 Detection** - Comprehensive Next.js vulnerability scanning
@@ -139,7 +139,7 @@ A play on "Sherlock Holmes" - your detective for finding security threats. Eleme
 **Migration Guide:**
 - Update package references from `cve-2025-55182-tools` to `shellockolm`
 - Update CLI commands (see BREAKING CHANGES above)
-- Repository URL: https://github.com/hlsitechio/shellockolm
+- Repository URL: https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner
 
 ### v1.1.0 Highlights
 
@@ -184,6 +184,6 @@ This is the initial production-ready release of the CVE-2025-55182 security tool
 
 ---
 
-[2.0.0]: https://github.com/hlsitechio/shellockolm/releases/tag/v2.0.0
-[1.1.0]: https://github.com/hlsitechio/shellockolm/releases/tag/v1.1.0
-[1.0.0]: https://github.com/hlsitechio/shellockolm/releases/tag/v1.0.0
+[2.0.0]: https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/releases/tag/v2.0.0
+[1.1.0]: https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/releases/tag/v1.1.0
+[1.0.0]: https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/releases/tag/v1.0.0

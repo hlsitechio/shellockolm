@@ -20,7 +20,7 @@
 ```powershell
 iex (irm https://raw.githubusercontent.com/hlsitechio/shellockolm/main/scripts/install.ps1)
 ```
-**Or:** [Download ZIP](https://github.com/hlsitechio/shellockolm/archive/refs/heads/main.zip) → Double-click `scripts/setup.bat`
+**Or:** [Download ZIP](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/archive/refs/heads/main.zip) → Double-click `scripts/setup.bat`
 
 ---
 
@@ -62,7 +62,7 @@ curl -fsSL https://raw.githubusercontent.com/hlsitechio/shellockolm/main/scripts
 [![Claude Compatible](https://img.shields.io/badge/Claude-Desktop%20%26%20Code%20CLI-blueviolet)](docs/CLAUDE_CODE_CLI.md)
 [![MIT License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![One-Line Install](https://img.shields.io/badge/install-one%20line-success)](docs/INSTALL.md)
-[![v3.0.0](https://img.shields.io/badge/version-3.0.0-orange)](https://github.com/hlsitechio/shellockolm/releases/latest)
+[![v3.0.0](https://img.shields.io/badge/version-3.0.0-orange)](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/releases/latest)
 
 [What It Finds](#-what-it-finds) • [Live Demo](#-see-it-in-action) • [AI Integration](#-use-in-ai-assistants) • [All Features](#-complete-features) • [Full Docs](docs/INSTALL.md)
 
@@ -435,8 +435,8 @@ The scanner sits **outside the blast radius** of the ecosystem it's auditing.
 
 Found a bug? Have a feature request? Want to add CVE coverage?
 
-- [Issues](https://github.com/hlsitechio/shellockolm/issues)
-- [Discussions](https://github.com/hlsitechio/shellockolm/discussions)
+- [Issues](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/issues)
+- [Discussions](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/discussions)
 - [Contributing Guide](CONTRIBUTING.md)
 - [Code of Conduct](CODE_OF_CONDUCT.md)
 
@@ -466,7 +466,7 @@ MIT License — See [LICENSE](LICENSE)
 
 **⭐ Star this repo if it helped secure your applications**
 
-[Get Started](#-install--run-in-60-seconds) | [Features](#-complete-features) | [Contributors](docs/CONTRIBUTORS.md) | [Report Issue](https://github.com/hlsitechio/shellockolm/issues)
+[Get Started](#-install--run-in-60-seconds) | [Features](#-complete-features) | [Contributors](docs/CONTRIBUTORS.md) | [Report Issue](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/issues)
 
 Built with 🔍 by [@hlsitechio](https://github.com/hlsitechio) & AI ([Claude](https://claude.ai) + [GitHub Copilot](https://github.com/features/copilot)) | For the security community
 

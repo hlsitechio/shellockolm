@@ -30,7 +30,7 @@ Done! ✅
 
 ## 💡 Ways to Contribute
 
-- 🐛 **Fix bugs** - Check [issues](https://github.com/hlsitechio/shellockolm/issues)
+- 🐛 **Fix bugs** - Check [issues](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/issues)
 - ✨ **Add features** - New scanners, CVE detection, etc.
 - 📖 **Improve docs** - Clearer = better
 - 🧪 **Add tests** - Coverage is good
@@ -168,6 +168,6 @@ See [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) for details.
 
 Every contribution helps make software more secure.
 
-**Questions?** [Open an issue](https://github.com/hlsitechio/shellockolm/issues) or ask in [Discussions](https://github.com/hlsitechio/shellockolm/discussions).
+**Questions?** [Open an issue](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/issues) or ask in [Discussions](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/discussions).
 
-**First-time contributor?** Look for [`good-first-issue`](https://github.com/hlsitechio/shellockolm/labels/good-first-issue) tags.
+**First-time contributor?** Look for [`good-first-issue`](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/labels/good-first-issue) tags.

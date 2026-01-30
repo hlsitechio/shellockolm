@@ -41,7 +41,7 @@ curl -fsSL https://raw.githubusercontent.com/hlsitechio/shellockolm/main/install
 
 Or manual:
 ```bash
-git clone https://github.com/hlsitechio/shellockolm.git
+git clone https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner.git
 cd shellockolm
 pip3 install -r requirements.txt
 python3 src/cli.py
@@ -149,7 +149,7 @@ Run PowerShell as Administrator:
 
 ### Still stuck?
 - [Installation Guide](INSTALL.md) - Full troubleshooting
-- [Open an Issue](https://github.com/hlsitechio/shellockolm/issues)
+- [Open an Issue](https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/issues)
 
 ---
 

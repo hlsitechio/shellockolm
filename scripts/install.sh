@@ -36,7 +36,7 @@ if [ -d "$INSTALL_DIR" ]; then
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         rm -rf "$INSTALL_DIR"
         info "Cloning repository..."
-        git clone https://github.com/hlsitechio/shellockolm.git "$INSTALL_DIR"
+        git clone https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner.git "$INSTALL_DIR"
         success "Repository cloned"
     else
         info "Updating existing installation..."
@@ -46,7 +46,7 @@ if [ -d "$INSTALL_DIR" ]; then
     fi
 else
     info "Cloning repository..."
-    git clone https://github.com/hlsitechio/shellockolm.git "$INSTALL_DIR"
+    git clone https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner.git "$INSTALL_DIR"
     success "Repository cloned to: $INSTALL_DIR"
 fi
 
@@ -182,8 +182,8 @@ if [[ ! $REPLY =~ ^[Nn]$ ]]; then
 fi
 
 echo -e "${CYAN}Documentation:${NC}"
-echo "  → README: https://github.com/hlsitechio/shellockolm"
-echo "  → Issues: https://github.com/hlsitechio/shellockolm/issues"
+echo "  → README: https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner"
+echo "  → Issues: https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/issues"
 echo ""
 
 # Offer to run first scan

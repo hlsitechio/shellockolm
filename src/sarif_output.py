@@ -131,7 +131,7 @@ class SarifGenerator:
     
     TOOL_NAME = "shellockolm"
     TOOL_VERSION = "2.0.0"
-    TOOL_INFO_URI = "https://github.com/hlsitechio/shellockolm"
+    TOOL_INFO_URI = "https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner"
     
     def __init__(self):
         self.rules: Dict[str, SarifRule] = {}
@@ -178,7 +178,7 @@ class SarifGenerator:
                 name="Remote Code Execution Pattern",
                 short_description="Code execution pattern detected",
                 full_description="Detected code pattern that could lead to remote code execution (eval, exec, etc.)",
-                help_uri="https://github.com/hlsitechio/shellockolm#malware-patterns",
+                help_uri="https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner#malware-patterns",
                 security_severity="critical",
                 tags=["security", "malware", "rce"]
             ),
@@ -187,7 +187,7 @@ class SarifGenerator:
                 name="Data Exfiltration Pattern",
                 short_description="Data exfiltration pattern detected",
                 full_description="Detected code pattern that could exfiltrate sensitive data",
-                help_uri="https://github.com/hlsitechio/shellockolm#malware-patterns",
+                help_uri="https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner#malware-patterns",
                 security_severity="high",
                 tags=["security", "malware", "exfiltration"]
             ),
@@ -196,7 +196,7 @@ class SarifGenerator:
                 name="Backdoor Pattern",
                 short_description="Backdoor pattern detected",
                 full_description="Detected code pattern that could be a backdoor",
-                help_uri="https://github.com/hlsitechio/shellockolm#malware-patterns",
+                help_uri="https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner#malware-patterns",
                 security_severity="critical",
                 tags=["security", "malware", "backdoor"]
             ),
@@ -227,7 +227,7 @@ class SarifGenerator:
                 name="Generic Secret Exposed",
                 short_description="Potential secret found in code",
                 full_description="High entropy string detected that may be a secret or credential",
-                help_uri="https://github.com/hlsitechio/shellockolm#secrets-scanner",
+                help_uri="https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner#secrets-scanner",
                 security_severity="medium",
                 tags=["security", "secrets"]
             ),
@@ -249,7 +249,7 @@ class SarifGenerator:
                 name="Vulnerable Dependency",
                 short_description="Vulnerable dependency version",
                 full_description="Dependency has known security vulnerabilities",
-                help_uri="https://github.com/hlsitechio/shellockolm#vulnerability-scanner",
+                help_uri="https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner#vulnerability-scanner",
                 security_severity="high",
                 tags=["security", "dependency", "vulnerability"]
             ),
@@ -304,7 +304,7 @@ class SarifGenerator:
                 name=pattern_name,
                 short_description=pattern_name,
                 full_description=message,
-                help_uri="https://github.com/hlsitechio/shellockolm#malware-patterns",
+                help_uri="https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner#malware-patterns",
                 security_severity=severity,
                 tags=["security", "malware"]
             ))
@@ -331,7 +331,7 @@ class SarifGenerator:
                 name=f"{secret_type} Exposed",
                 short_description=f"Exposed {secret_type}",
                 full_description=message,
-                help_uri="https://github.com/hlsitechio/shellockolm#secrets-scanner",
+                help_uri="https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner#secrets-scanner",
                 security_severity=severity,
                 tags=["security", "secrets", secret_type.lower()]
             ))
@@ -438,7 +438,7 @@ class SarifGenerator:
                     name=issue.title[:50],
                     short_description=issue.title,
                     full_description=issue.description,
-                    help_uri="https://github.com/hlsitechio/shellockolm#lockfile-analyzer",
+                    help_uri="https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner#lockfile-analyzer",
                     security_severity=severity,
                     tags=["security", "dependency", issue.issue_type.value]
                 ))

@@ -359,8 +359,8 @@ Ask AI: "Scan this PR for security issues using shellockolm"
 ## 📖 Learn More
 
 - **MCP Protocol:** https://modelcontextprotocol.io
-- **Shellockolm Docs:** https://github.com/hlsitechio/shellockolm
-- **Report Issues:** https://github.com/hlsitechio/shellockolm/issues
+- **Shellockolm Docs:** https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner
+- **Report Issues:** https://github.com/hlsitechio/Shellockolm-AI-CLI-MCP-Scanner/issues
 
 ---
 
