@@ -41,22 +41,22 @@ curl -fsSL https://raw.githubusercontent.com/hlsitechio/shellockolm/main/scripts
 
 ---
 
+</div>
+
 **Then run:** `python src/cli.py scan .` → ✅ **Instant security audit**
 
 🤖 **Want AI integration?** `python src/configure_mcp.py` → Use Shellockolm inside Claude/Copilot!
 
-📖 **[Full installation guide](docs/INSTALL.md)** | 🚀 **[Quick start](docs/QUICKSTART.md)** | ⚡ **[Fast install reference](docs/FAST_INSTALL.md)** | 🤖 **[MCP Setup](docs/MCP_SETUP.md)**
-
-</div>
-
 <div align="center">
+
+📖 **[Full installation guide](docs/INSTALL.md)** | 🚀 **[Quick start](docs/QUICKSTART.md)** | ⚡ **[Fast install reference](docs/FAST_INSTALL.md)** | 🤖 **[MCP Setup](docs/MCP_SETUP.md)**
 
 **✅ 32 CVEs detected** | **✅ Malware & secrets found** | **✅ Auto-fix with backups** | **✅ 100% offline**
 
 [![Python 3.10+](https://img.shields.io/badge/python-3.10%2B-blue)](https://www.python.org/downloads/)
 [![MIT License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![One-Line Install](https://img.shields.io/badge/install-one%20line-success)](docs/INSTALL.md)
-[![GitHub Release](https://img.shields.io/github/v/release/hlsitechio/shellockolm?color=success)](https://github.com/hlsitechio/shellockolm/releases/latest)
+[![GitHub Release](https://img.shields.io/github/v/release/hlsitechio/shellockolm?color=success)](https://github.com/hlsitechio/shellocholm/releases/latest)
 
 [What It Finds](#-what-it-finds) • [Live Demo](#-see-it-in-action) • [All Features](#-complete-features) • [Full Docs](docs/INSTALL.md)
 
